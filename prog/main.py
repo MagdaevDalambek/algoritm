@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import itertools
 import math
 import random as rnd
@@ -37,47 +40,48 @@ def create_graph(x, y, namegraph):
     plt.ylabel("Время работы функции")
 
 
-count = 50
-x1 = [i for i in range(10, count*10+1, 10)]
-x2 = [[i]*30 for i in x1]
-xgraph = list(itertools.chain.from_iterable(x2))
-randmax = 1000000
-timesred = []
-timehud = []
+if __name__ == '__main__':
+    count = 50
+    x1 = [i for i in range(10, count*10+1, 10)]
+    x2 = [[i]*30 for i in x1]
+    xgraph = list(itertools.chain.from_iterable(x2))
+    randmax = 1000000
+    timesred = []
+    timehud = []
 
-for i in xgraph:
-    sred = [rnd.randint(0, randmax) for j in range(i)]
-    timesred.append(timeit.timeit(lambda: bubble_sort(sred), number=1))
+    for i in xgraph:
+        sred = [rnd.randint(0, randmax) for j in range(i)]
+        timesred.append(timeit.timeit(lambda: bubble_sort(sred), number=1))
 
-for i in x1:
-    hud = [j for j in range(i, 0, -1)]
-    timehud.append(timeit.timeit(lambda: bubble_sort(hud), number=1))
+    for i in x1:
+        hud = [j for j in range(i, 0, -1)]
+        timehud.append(timeit.timeit(lambda: bubble_sort(hud), number=1))
 
-timedel = [timesred[i: i+30] for i in range(0, len(timesred), 30)]
-e = [(1/30*(sum(timedel[i]))) for i in range(len(timedel))]
+    timedel = [timesred[i: i+30] for i in range(0, len(timesred), 30)]
+    e = [(1/30*(sum(timedel[i]))) for i in range(len(timedel))]
 
-sigmavalue = [sum([(timedel[k][j] - e[k])**2 for j in range(30)])
-              for k in range(count)]
-sigma = [math.sqrt(1/29*sigmavalue[k]) for k in range(count)]
-a, b, c = coeffs(x1, e)
-ysred = a * np.array(x1) ** 2 + b * np.array(x1) + c
+    sigmavalue = [sum([(timedel[k][j] - e[k])**2 for j in range(30)])
+                for k in range(count)]
+    sigma = [math.sqrt(1/29*sigmavalue[k]) for k in range(count)]
+    a, b, c = coeffs(x1, e)
+    ysred = a * np.array(x1) ** 2 + b * np.array(x1) + c
 
-a, b, c = coeffs(x1, timehud)
-yhud = a * np.array(x1) ** 2 + b * np.array(x1) + c
+    a, b, c = coeffs(x1, timehud)
+    yhud = a * np.array(x1) ** 2 + b * np.array(x1) + c
 
-name = "Средний случай исходные данные"
-plt.figure(name)
-create_graph(xgraph, timesred, name)
+    name = "Средний случай исходные данные"
+    plt.figure(name)
+    create_graph(xgraph, timesred, name)
 
-name = "Средний случай средние значения с отклонениями и параболой"
-plt.figure(name)
-plt.errorbar(x1, e, yerr=sigma, fmt='none', capsize=2)
-plt.plot(x1, ysred, color="green", linewidth=2)
-create_graph(x1, e, name)
+    name = "Средний случай средние значения с отклонениями и параболой"
+    plt.figure(name)
+    plt.errorbar(x1, e, yerr=sigma, fmt='none', capsize=2)
+    plt.plot(x1, ysred, color="green", linewidth=2)
+    create_graph(x1, e, name)
 
-name = "Худший случай"
-plt.figure(name)
-plt.plot(x1, yhud, color="green", linewidth=2)
-create_graph(x1, timehud, name)
+    name = "Худший случай"
+    plt.figure(name)
+    plt.plot(x1, yhud, color="green", linewidth=2)
+    create_graph(x1, timehud, name)
 
-plt.show()
+    plt.show()
